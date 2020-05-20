@@ -1,7 +1,6 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 
@@ -18,6 +17,18 @@ import diet.User;
 import diet.Order.OrderStatus;
 import diet.Order.PaymentMethod;
 
+/**
+ * Example test for extended Diet lab assignment
+ * 
+ *
+ * <p>History:
+ * <ul>
+ * <li> 2020-05-15 : adjusted for correct order time
+ * <li> 2020-05-16 : adjusted for default payment method and time format
+ * </ul>
+ *
+ * @version 1.2
+ */
 public class ExampleTest_Ext {
 	
 	@Test
@@ -217,11 +228,11 @@ public class ExampleTest_Ext {
         //Making new orders
         Order o1 = takeaway.createOrder(u1, "Napoli", 17, 47);//r1
         o1.addMenus("M6", 1).addMenus("M1", 2);
-        assertEquals(o1.toString().trim(),"Napoli, Ralph Fiennes : (08:00):\n\tM1->2\n\tM6->1");
+        assertEquals(o1.toString().trim(),"Napoli, Ralph Fiennes : (19:00):\n\tM1->2\n\tM6->1");
         o1.addMenus("M1", 3);
-        assertEquals(o1.toString().trim(),"Napoli, Ralph Fiennes : (08:00):\n\tM1->3\n\tM6->1");
+        assertEquals(o1.toString().trim(),"Napoli, Ralph Fiennes : (19:00):\n\tM1->3\n\tM6->1");
         o1.addMenus("M1", 2);
-        assertEquals(o1.toString().trim(),"Napoli, Ralph Fiennes : (08:00):\n\tM1->2\n\tM6->1");
+        assertEquals(o1.toString().trim(),"Napoli, Ralph Fiennes : (19:00):\n\tM1->2\n\tM6->1");
         
         
        
@@ -230,12 +241,12 @@ public class ExampleTest_Ext {
         
         Order o3 = takeaway.createOrder(u2, "Milano",  20, 30);//r4
         o3.addMenus("M2", 1).addMenus("M4", 2).addMenus("M5", 1);
-        assertTrue(o3.getPaymentMethod() == PaymentMethod.CASH);
+        assertEquals(PaymentMethod.CASH, o3.getPaymentMethod());
         
         Order o4 = takeaway.createOrder(u3, "Roma",  2, 15);//r2
         o4.addMenus("M3", 4).addMenus("M5", 3);
         o4.setPaymentMethod(PaymentMethod.CARD);
-        assertTrue(o4.getPaymentMethod() == PaymentMethod.CARD);
+        assertEquals(PaymentMethod.CARD, o4.getPaymentMethod());
         
         Order o5 = takeaway.createOrder(u4, "Napoli",  17, 18);//r1
         o5.addMenus("M6", 1);
@@ -245,25 +256,25 @@ public class ExampleTest_Ext {
         
         Order o7 = takeaway.createOrder(u1, "Napoli",  11, 47);//r1
         o7.addMenus("M6", 2);
-        assertTrue(o7.getPaymentMethod() == PaymentMethod.CASH);
+        assertEquals(PaymentMethod.CASH, o7.getPaymentMethod());
         
         Order o8 = takeaway.createOrder(u1, "Napoli", 9, 15);//r1
         o8.addMenus("M1", 1);
-        assertTrue(o8.getPaymentMethod() == PaymentMethod.PAID);
+        assertEquals(PaymentMethod.CASH, o8.getPaymentMethod());
         
        
-        assertTrue(o1.getStatus()==OrderStatus.ORDERED);
+        assertEquals(OrderStatus.ORDERED, o1.getStatus());
         o1.setStatus(OrderStatus.DELIVERED);
-        assertTrue(o1.getStatus()==OrderStatus.DELIVERED);
+        assertEquals(OrderStatus.DELIVERED, o1.getStatus());
         o2.setStatus(OrderStatus.READY);
         o4.setStatus(OrderStatus.READY);
         o5.setStatus(OrderStatus.DELIVERED);
         
         
 
-        assertEquals(r1.ordersWithStatus(OrderStatus.DELIVERED).trim(),"Napoli, Judi Dench : (08:00):\n\tM6->1\nNapoli, Ralph Fiennes : (08:00):\n\tM1->2\n\tM6->1");    
+        assertEquals(r1.ordersWithStatus(OrderStatus.DELIVERED).trim(),"Napoli, Judi Dench : (19:00):\n\tM6->1\nNapoli, Ralph Fiennes : (19:00):\n\tM1->2\n\tM6->1");    
         assertEquals(r2.ordersWithStatus(OrderStatus.READY).trim(),"Roma, Maggie Smith : (08:45):\n\tM3->4\n\tM5->3");       
-        assertEquals(r3.ordersWithStatus(OrderStatus.ORDERED).trim(),"Venezia, Maggie Smith : (07:45):\n\tM1->1\n\tM4->2");
+        assertEquals(r3.ordersWithStatus(OrderStatus.ORDERED).trim(),"Venezia, Maggie Smith : (12:30):\n\tM1->1\n\tM4->2");
         assertEquals(r4.ordersWithStatus(OrderStatus.ORDERED).trim(),"Milano, Ian McKellen : (20:30):\n\tM2->1\n\tM4->2\n\tM5->1");
         
         
@@ -272,14 +283,14 @@ public class ExampleTest_Ext {
         for (User u : takeaway.users()) {
         	user_sort.append(u).append("\n");
         }
-        assertTrue(user_sort.toString().equals("Judi Dench\nRalph Fiennes\nAdam McKellen\nIan McKellen\nMaggie Smith\n"));
+        assertEquals("Judi Dench\nRalph Fiennes\nAdam McKellen\nIan McKellen\nMaggie Smith\n", user_sort.toString());
         
         
         StringBuffer openR1 = new StringBuffer();
         for (Restaurant r: takeaway.openedRestaurants("05:50")) {
         	openR1.append(r.getName()).append("\n");
         }
-        assertTrue(openR1.toString().equals(""));
+        assertEquals("", openR1.toString());
         
         
         StringBuffer openR2 = new StringBuffer();
@@ -289,6 +300,7 @@ public class ExampleTest_Ext {
         assertEquals("Milano\nNapoli\nRoma\n",openR2.toString());
                 
         assertEquals(0,takeaway.openedRestaurants("02:15").size());
+        assertEquals(2,takeaway.openedRestaurants("08:40").size());
                
     }
 }
