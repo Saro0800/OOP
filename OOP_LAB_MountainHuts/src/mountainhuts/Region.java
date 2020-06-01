@@ -111,7 +111,7 @@ public class Region {
 			return this.municMap.get(name);
 		}
 		
-		/* Alternativa con gli Stream molto più inefficiente di quanto fatto sopra*/
+		/* Alternativa con gli Stream molto piÃ¹ inefficiente di quanto fatto sopra*/
 		
 	}
 
@@ -170,9 +170,12 @@ public class Region {
 			Municipality municipality) {
 		
 		MountainHut hut = this.mHutMap.get(name);
-		if(hut!=null)
-			return hut;
-		else return this.mHutMap.put(name, new MountainHut(name, altitude, category, bedsNumber, municipality));
+		if(hut == null) {
+			this.mHutMap.put(name, new MountainHut(name, altitude, category, bedsNumber, municipality));
+			hut = this.mHutMap.get(name);
+		}
+		
+		return hut;				
 	}
 
 	/**
